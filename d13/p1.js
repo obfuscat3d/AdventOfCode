@@ -1,3 +1,7 @@
+// https://adventofcode.com/2021/day/13
+
+// Problem 2 is basically the same but running all the instructions and having to look at the output.
+
 const _ = require('underscore');
 const fs = require('fs');
 
