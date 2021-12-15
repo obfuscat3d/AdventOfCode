@@ -37,5 +37,5 @@ module.exports = {
   makeGrid: makeGrid,
   xy: xy,
   yx: yx,
-  printGrid
+  printGrid: printGrid,
 }
