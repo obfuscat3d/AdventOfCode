@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "datastructures-js": "^10.1.1",
     "underscore": "^1.13.1"
   }
 }
