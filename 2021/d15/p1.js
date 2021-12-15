@@ -10,9 +10,6 @@ FILE = '2021/d15/input'
 const raw_data = fs.readFileSync(FILE, 'utf8');
 grid = raw_data.split('\n').map(l => l.split('').map(Number));
 
-// Handy function to generate non-diagonal neighbors in a grid
-neighbors = (x, y) => [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]].filter((a) => a[0] >= 0 && a[1] >= 0 && a[0] < grid.length && a[1] < grid.length);
-
 // Use Djikstra's algorithm to traverse the map.
 //
 // done tracks whether the quickest path to x,y is known
