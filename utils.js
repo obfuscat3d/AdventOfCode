@@ -23,13 +23,7 @@ const yx = (coord) => [coord>>16, coord&((1<<16)-1)];
 
 // This comes up a lot in debugging
 const printGrid = (grid) => {
-  for (let x in grid) {
-    for (let y in grid[x]) {
-      process.stdout.write(grid[x][y].toString());
-    }
-    process.stdout.write('\n');
-  }
-  process.stdout.write('\n');
+  _.each(grid, n => console.log(n.join('')));
 }
 
 module.exports = {

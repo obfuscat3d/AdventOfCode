@@ -1,30 +1,18 @@
-import numpy as np
+import itertools
 
-# Print if two numbers sum to 2020
+# These are pretty inefficient implementations. In practice, part1 is doable in O(n) time
+# and part 2 in O(n log n) time, but here we're just going for O(n^2) and O(n^3) because
+# it doesn't matter with small inputs.
+
 def part1(nums):
-  # Load them in a hashtable and then check linearly ends up O(N) overall
-  ht = {i:True for i in nums}
-  for x in nums:
-    if 2020 - x in ht:
-      print(x*(2020-x))
+  print([a*b for (a, b) in itertools.combinations(nums, 2) if a+b == 2020])
 
-# Print if three numbers sum to 2020
 def part2(nums):
-  # New tactic, now we sort then go linearly. So O(n log n) overall
-  nums.sort()
-  for i in nums:
-    l,h = 0,len(nums)-1
-    while l < h and nums[l]+nums[h]+i != 2020:
-      if nums[l]+nums[h]+i < 2020:
-        l += 1
-      else:
-        h -= 1
-    if nums[l]+nums[h]+i == 2020:
-      print(nums[l], nums[h], i, nums[l]*nums[h]*i)
+  print([a*b*c for (a, b, c) in itertools.combinations(nums, 3) if a+b+c == 2020])
 
 if __name__ == '__main__':
-  with open('input') as input:
-    nums = np.array([int(line) for line in input.read().splitlines()])
+  with open('2020/d1/input') as input:
+    nums = [int(line) for line in input.read().splitlines()]
 
   part1(nums)
   part2(nums)
