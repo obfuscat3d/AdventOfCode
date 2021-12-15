@@ -3,11 +3,12 @@
 const _ = require('underscore');
 const fs = require('fs');
 const { MinPriorityQueue } = require('@datastructures-js/priority-queue');
+const µ = require('../../utils')
 
 FILE = '2021/d15/input'
 
 const raw_data = fs.readFileSync(FILE, 'utf8');
-grid = raw_data.split('\n').map((l) => l.split('').map(Number));
+grid = raw_data.split('\n').map(l => l.split('').map(Number));
 
 // Handy function to generate non-diagonal neighbors in a grid
 neighbors = (x, y) => [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]].filter((a) => a[0] >= 0 && a[1] >= 0 && a[0] < grid.length && a[1] < grid.length);
@@ -28,7 +29,7 @@ pq.enqueue([0, 0], 0);
 while (!done[grid.length - 1][grid.length - 1]) {
   let [x, y] = pq.dequeue().element;
   done[x][y] = 1;
-  _.each(neighbors(x, y), ([i,j]) => {
+  _.each(µ.neighbors(grid, x, y), ([i,j]) => {
     let alt = cost[x][y] + grid[i][j];
     if (!done[i][j] && alt < cost[i][j]) {
       cost[i][j] = alt;
