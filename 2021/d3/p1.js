@@ -11,11 +11,13 @@ const data = _.toArray(raw_data.split(/\s/)).map((n) => parseInt(n, 2));
 
 let gamma=0, epsilon=0;
 
-for (let i=0; i < NUM_BITS; i++) {
+_.each(_.range(NUM_BITS), (n) => {
+  // bits is an array = [number_of_zeros, number_of_ones], so bits[1] = number of ones
   bits = _.countBy(data.map((n) => (n & 1<<i) ? 1 : 0));
   gamma += (bits[1] < data.length/2) ? 0 : 1<<i;
-}
+});
 
+// epsilon is just gamma with all the bits flipped
 epsilon = ((1<<NUM_BITS)-1) ^ gamma;
 
 console.log('Gamma: ' + gamma);

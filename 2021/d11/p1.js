@@ -2,67 +2,54 @@
 
 const _ = require('underscore');
 const fs = require('fs');
+const µ = require('../../utils');
 
 const FILE = '2021/d11/input';
 
 const raw_data = fs.readFileSync(FILE, 'utf8');
-grid = raw_data.split('\n').map((row) => row.split('').map((point) => parseInt(point)));
-
-function getNeighbors(grid, x, y) {
-  candidates = _.flatten([-1, 0, 1].map((a) => [-1, 0, 1].map((b) => [x + a, y + b])), 1)
-  candidates = candidates.filter((xy) => (xy[0] != x || xy[1] != y));
-  return _.filter(candidates, (xy) => xy[0] >= 0 && xy[0] < grid.length && xy[1] >= 0 && xy[1] < grid[x].length);
-}
+grid = raw_data.split('\n').map((row) => row.split('').map(Number));
 
 flashCount = 0;
 
+// Mess of a function that could be split up
 function step(grid) {
-  flashed = [];
-  flash_queue = [];
-  for (let i = 0; i < grid.length; i++) {
-    for (let j = 0; j < grid[i].length; j++) {
-      if (grid[i][j] >= 9) {
-        flash_queue.push([i, j].join(','));
-      }
-    }
-  }
+  flashed = []; // Who has flashed this step?
+  flash_queue = []; // Queue of octopi that need to flash
 
+  // First, fine all the octopi with a score of 9 and queue them for flashing
+  _.each(_.range(grid.length), x => (
+    _.each(_.range(grid[0].length), y => {
+      if (grid[x][y] >= 9) flash_queue.push(µ.xy([x, y]));
+    })));
+
+  // Flash the ones in the queue and keep adding any new
+  // octopi to the queue if they need to flash this step
   while (flash_queue.length) {
     cur = flash_queue.pop();
     if (!_.contains(flashed, cur)) {
-      flashed.push(cur);
       flashCount++;
-      xy = cur.split(',').map((n) => parseInt(n));
-      _.each(getNeighbors(grid, xy[0], xy[1]), (n) => {
-        if (++grid[n[0]][n[1]] >= 9) {
-          flash_queue.push(n.join(','));
+      flashed.push(cur);
+      [x, y] = µ.yx(cur);
+      _.each(µ.neighbors(grid, x, y, true), ([i, j]) => {
+        if (++grid[i][j] >= 9) {
+          flash_queue.push(µ.xy([i, j]));
         }
       });
     }
   }
 
-  for (let i = 0; i < grid.length; i++) {
-    for (let j = 0; j < grid[i].length; j++) {
-      grid[i][j]++;
-    }
-  }
+  // Everyone's flashed, now increment all the energy levels
+  _.each(_.range(grid.length), x => (
+    _.each(_.range(grid[0].length), y => (
+      grid[x][y]++
+    ))));
 
+  // And reset the flashers back to zero
   _.each(flashed, (e) => {
-    [x, y] = e.split(',').map(n => parseInt(n));
+    [x, y] = µ.yx(e);
     grid[x][y] = 0;
   });
-
 }
 
-function printGrid(grid) {
-  for (let x in grid) {
-    for (let y in grid[x]) {
-      process.stdout.write(grid[x][y].toString()+' ');
-    }
-    process.stdout.write('\n');
-  }
-  process.stdout.write('\n');
-}
-
-_.each(_.range(100),n => step(grid));
+_.each(_.range(100), n => step(grid));
 console.log(flashCount);

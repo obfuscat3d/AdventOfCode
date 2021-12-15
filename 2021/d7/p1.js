@@ -6,9 +6,9 @@ const fs = require('fs');
 const FILE = '2021/d7/input';
 
 const raw_data = fs.readFileSync(FILE, 'utf8');
-pos = raw_data.split(',').map((n) => parseInt(n)).sort();
+pos = raw_data.split(',').map(Number).sort();
 b = _.range(Math.max(...pos)).map((guess) => {
-  return pos.map((p) => Math.abs(p - guess)).reduce((a, b) => a + b, 0);
+  return pos.map(p => Math.abs(p - guess)).reduce((a, b) => a + b, 0);
 });
 
 console.log(Math.min(...b));

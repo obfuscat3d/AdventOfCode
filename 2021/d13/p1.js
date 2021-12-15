@@ -4,23 +4,13 @@
 
 const _ = require('underscore');
 const fs = require('fs');
+const µ = require('../../utils')
 
 const FILE = '2021/d13/input';
 
-function pg(g) {
-  for (let y = 0; y < g[0].length; y++) {
-    for (let x = 0; x < g.length; x++) {
-      process.stdout.write(g[x][y].toString());
-    }
-    process.stdout.write('\n');
-  }
-  process.stdout.write('\n');
-  process.stdout.write('\n');
-}
-
 const raw_data = fs.readFileSync(FILE, 'utf8');
 [lines, instructions] = raw_data.split('\n\n');
-points = lines.split('\n').map((l) => l.split(',').map((n) => parseInt(n)));
+points = lines.split('\n').map((l) => l.split(',').map(Number));
 [width, height] = [1+Math.max(..._.pluck(points, 0)), 1+Math.max(..._.pluck(points, 1))];
 
 grid = Array(width).fill(0).map(x => new Array(height).fill(0));
@@ -48,6 +38,6 @@ _.each(instructions, (i) => {
   }
 })
 
-pg(grid);
+µ.printGrid(grid);
 
 console.log(_.compact(_.flatten(grid)).length);

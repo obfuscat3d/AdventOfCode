@@ -10,14 +10,18 @@ graph = {}
 const raw_data = fs.readFileSync(FILE, 'utf8');
 _.each(raw_data.split(/\n/), (e) => {
   [a, b] = e.split('-');
-  _.contains(_.keys(graph), a) ? graph[a].push(b) : graph[a] = [b];
-  _.contains(_.keys(graph), b) ? graph[b].push(a) : graph[b] = [a];
+  a in graph ? graph[a].push(b) : graph[a] = [b];
+  b in graph ? graph[b].push(a) : graph[b] = [a];
 });
 
 function canRevisit(node) {
   return /^[A-Z]+$/.test(node);
 }
 
+// Simple DFS path counting straight out of freshman year.
+// Only change from p1 is that we can visit one minor node twice,
+// so we just track whether or not we've done that for the
+// current path in hasRevisited
 function countPaths(graph, node, path, hasRevisited) {
   if (node == 'start' && path.length) {
     return 0;
@@ -31,11 +35,14 @@ function countPaths(graph, node, path, hasRevisited) {
     if (!hasRevisited) {
       hasRevisited = true;
     } else {
+      // Short circuit if we're just revisiting a minor node for the second time.
       return 0;
     }
   }
 
-  return graph[node].map((dest) => countPaths(graph, dest, [...path, node], hasRevisited)).reduce((a, b) => a + b, 0);
+  return graph[node]
+    .map(dest => countPaths(graph, dest, [...path, node], hasRevisited))
+    .reduce((a, b) => a + b, 0);
 }
 
 console.log(countPaths(graph, 'start', [], false));

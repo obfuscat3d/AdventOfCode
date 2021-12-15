@@ -12,8 +12,9 @@ const data = _.toArray(raw_data.split(/\s/)).map((n) => parseInt(n, 2));
 let oxygen = data;
 // Keep most common, if tied, keep 1s
 for (let i = NUM_BITS - 1; i >= 0 && oxygen.length > 1; i--) {
+  // bits is an array = [number_of_zeros, number_of_ones], so bits[1] = number of ones
   bits = _.countBy(oxygen.map((n) => (n & 1 << i) ? 1 : 0));
-  if (bits[0] <= bits[1]) { // Keep 1s
+  if (bits[0] <= bits[1]) {
     oxygen = _.filter(oxygen, (n) => n & 1 << i);
   } else {
     oxygen = _.filter(oxygen, (n) => !(n & 1 << i));
@@ -23,8 +24,9 @@ for (let i = NUM_BITS - 1; i >= 0 && oxygen.length > 1; i--) {
 let scrubber = data;
 // Keep lease common, if tied, keep 0s
 for (let i = NUM_BITS - 1; i >= 0 && scrubber.length > 1; i--) {
+  // bits is an array = [number_of_zeros, number_of_ones], so bits[1] = number of ones
   bits = _.countBy(scrubber.map((n) => (n & 1 << i) ? 1 : 0));
-  if (bits[0] > bits[1]) { // Keep 0s
+  if (bits[0] > bits[1]) {
     scrubber = _.filter(scrubber, (n) => n & 1 << i);
   } else {
     scrubber = _.filter(scrubber, (n) => !(n & 1 << i));

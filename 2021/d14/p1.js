@@ -1,28 +1,32 @@
+// https://adventofcode.com/2021/day/14
+
 const _ = require('underscore');
 const fs = require('fs');
 
-const FILE = '2021/d14/input2';
+const FILE = '2021/d14/input';
 
 const raw_data = fs.readFileSync(FILE, 'utf8');
-[tmplt, rules] = raw_data.split('\n\n');
+[template, rules] = raw_data.split('\n\n');
 
+// ruleMap = { 'XY': 'Z', ... }, where XX gets translated to XYZ in the template string
 ruleMap = {}
 _.each(rules.split('\n'), (r) => ruleMap[r.substring(0,2)] = r[6]);
 
-function step(ruleMap, tmplt) {
+// Build a new template string at each step, which is just the
+// old template with the new letters inbetween.
+function step(ruleMap, template) {
   let result = '';
-  for (let i = 0; i < tmplt.length-1; i++) {
-    result += tmplt[i];
-    key = tmplt.substring(i, i+2);
+  for (let i = 0; i < template.length-1; i++) {
+    result += template[i];
+    key = template.substring(i, i+2);
     result += key in ruleMap ? ruleMap[key] : '';
   }
-  result += tmplt[tmplt.length-1];
+  result += template[template.length-1];
   return result;
 }
 
-for (let i = 0; i < 10; i++) {
-  tmplt = step(ruleMap, tmplt);
-}
+template = _.range(10).reduce((a, b) => step(ruleMap, a), template);
 
-counts = _.values(_.countBy(tmplt));
+// count letter frequency in the final template and print max-min
+counts = _.values(_.countBy(template));
 console.log(Math.max(...counts) - Math.min(...counts));

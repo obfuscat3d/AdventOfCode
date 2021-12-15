@@ -18,11 +18,10 @@ const POINTS = {
 }
 
 const raw_data = fs.readFileSync(FILE, 'utf8');
-//raw_data = '[({(<(())[]>[[{[]{<()<>>';
 points = raw_data.split('\n').map((l) => {
   stack = [];
   for (let i in l) {
-    if (_.contains(_.keys(CHARS), l[i])) {
+    if (l[i] in CHARS) {
       stack.push(l[i]);
     } else {
       if (l[i] != CHARS[stack.pop()]) {
