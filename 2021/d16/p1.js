@@ -1,8 +1,7 @@
-// https://adventofcode.com/2021/day/15
+// https://adventofcode.com/2021/day/16
 
 const _ = require('underscore');
 const fs = require('fs');
-const util = require('util');
 
 FILE = '2021/d16/input'
 
@@ -17,9 +16,8 @@ TYPES = {
   EQUAL: 7,
 }
 
-HEX_BIN_MAP = _.range(16).reduce((a, b) => { return { [b.toString(16)]: b.toString(2).padStart(4, '0'), ...a }; }, {})
-const h2b = (h) => _.map(h.toLowerCase(), i => HEX_BIN_MAP[i]).join('');
-const ss = (s, ...i) => [s.substring(0, i), s.substring(i)]
+const h2b = (h) => _.map(h, i => parseInt(i, 16).toString(2).padStart(4, '0')).join('');
+const ss = (s, i) => [s.substring(0, i), s.substring(i)]
 
 const parseLiteral = (stream) => {
   let version = -1, type = -1, payload = 0;
@@ -67,13 +65,8 @@ const decodePackets = (stream, packetCount = 1) => {
   let packets = []
   while (stream.length > 10 && packetCount-- > 0) { // No packet length can be less than 11
     type = parseInt(stream.substring(3, 6), 2);
-    if (type == TYPES.LITERAL) {
-      [packet, stream] = parseLiteral(stream);
-      packets.push(packet);
-    } else {
-      [packet, stream] = parseOperator(stream);
-      packets.push(packet);
-    }
+    [packet, stream] = type == TYPES.LITERAL ? parseLiteral(stream) : parseOperator(stream);
+    packets.push(packet);
   }
   return [packets, stream];
 }
@@ -83,11 +76,9 @@ const sumVersions = (packets) => {
 }
 
 const sumVersion = (packet) => {
-  if (packet.type == TYPES.LITERAL) {
-    return packet.version;
-  } else {
-    return packet.version + sumVersions(packet.payload);
-  }
+  return packet.type == TYPES.LITERAL ?
+    packet.version :
+    packet.version + sumVersions(packet.payload);
 }
 
 const calculateValue = (packet) => {
@@ -112,15 +103,11 @@ const calculateValue = (packet) => {
 }
 
 const raw_data = fs.readFileSync(FILE, 'utf8');
-packet = decodePackets(h2b(raw_data))[0];
+packet = decodePackets(h2b(raw_data))[0][0];
 
 // Part 1
-console.log(
-  sumVersions(packet)
-);
+console.log(sumVersion(packet));
 
 // Part 2
-console.log(
-  calculateValue(packet[0])
-);
+console.log(calculateValue(packet));
 
