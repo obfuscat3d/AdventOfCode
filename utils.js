@@ -6,11 +6,11 @@ const _ = require('underscore');
 
 // Get neighbors on a 2D grid.
 const neighbors = (grid, x, y, diagonal = false) =>
-  _.flatten([-1, 0, 1].map(a => [-1, 0, 1].map(b => [x + a, y + b])), 1)
+  _.flatten([-1, 0, 1].map(a => [-1, 0, 1].map(b => [x + a, y + b])), 1) // get an array of coords
     .filter(([i, j]) => (
-      i >= 0 && j >= 0 && i < grid.length && j < grid.length &&
-      (i != x || j != y) &&
-      (diagonal || i == x || y == j)));
+      i >= 0 && j >= 0 && i < grid.length && j < grid.length && // filter so they're valid coords
+      (i != x || j != y) && // exclude self
+      (diagonal || i == x || y == j))); // optionally exclude diagonal
 
 // make a 2D grid
 const makeGrid = (x, y, fill = 0) =>
