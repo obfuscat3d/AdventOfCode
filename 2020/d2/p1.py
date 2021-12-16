@@ -1,5 +1,7 @@
 import re
 
+FILE = '2020/d2/input'
+
 # returns a tuple (letter, num, num, password)
 def parse(line):
   remainder, pw = line.split(': ')
@@ -20,7 +22,7 @@ def part2(data):
   print(len([x for x in data if check2(x[0], x[1], x[2], x[3])]))
 
 if __name__ == '__main__':
-  with open('input') as input:
+  with open(FILE) as input:
     data = [parse(line) for line in input.read().splitlines()]
 
   part1(data)

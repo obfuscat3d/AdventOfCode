@@ -23,11 +23,8 @@ const parseLiteral = (stream) => {
   let version = -1, type = -1, payload = 0;
   [version, stream] = ss(stream, 3);
   [type, stream] = ss(stream, 3);
-  [chunk, stream] = ss(stream, 5);
-  while (chunk[0] == '1') {
+  for ([chunk, stream] = ss(stream, 5); chunk[0] == '1'; [chunk, stream] = ss(stream, 5))
     payload = 16 * payload + parseInt(chunk.substring(1), 2);
-    [chunk, stream] = ss(stream, 5);
-  }
   payload = 16 * payload + parseInt(chunk.substring(1), 2);
   return [
     {
@@ -71,14 +68,10 @@ const decodePackets = (stream, packetCount = 1) => {
   return [packets, stream];
 }
 
-const sumVersions = (packets) => {
-  return _.map(packets, p => sumVersion(p)).reduce((a, b) => a + b, 0);
-}
-
 const sumVersion = (packet) => {
   return packet.type == TYPES.LITERAL ?
     packet.version :
-    packet.version + sumVersions(packet.payload);
+    packet.version + _.map(packet.payload, p => sumVersion(p)).reduce((a, b) => a + b, 0);
 }
 
 const calculateValue = (packet) => {
