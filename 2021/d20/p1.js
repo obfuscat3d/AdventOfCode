@@ -24,7 +24,7 @@ function step(algorithm, image, bounds, iter) {
   for (let x = minX - 1; x <= maxX + 1; x++) // always exceed the bounds by 1 in all directions
     for (let y = minY - 1; y <= maxY + 1; y++)
       next_image.set(k(x, y), calcNext(algorithm, image, iter, x, y));
-  return [next_image, [bounds[0] - 2, bounds[1] - 1, bounds[2] + 1, bounds[3] + 1]];
+  return [next_image, [bounds[0] - 1, bounds[1] - 1, bounds[2] + 1, bounds[3] + 1]];
 }
 
 function run(algorithm, image, bounds, iterations) {
