@@ -21,10 +21,10 @@ function calcNext(algorithm, image, iter, x, y) {
 function step(algorithm, image, bounds, iter) {
   [minX, minY, maxX, maxY] = bounds;
   next_image = new Map();
-  for (let x = minX - 2; x <= maxX + 2; x++) // always exceed the bounds by 2 in all directions
-    for (let y = minY - 2; y <= maxY + 2; y++)
+  for (let x = minX - 1; x <= maxX + 1; x++) // always exceed the bounds by 1 in all directions
+    for (let y = minY - 1; y <= maxY + 1; y++)
       next_image.set(k(x, y), calcNext(algorithm, image, iter, x, y));
-  return [next_image, [bounds[0] - 2, bounds[1] - 2, bounds[2] + 2, bounds[3] + 2]];
+  return [next_image, [bounds[0] - 2, bounds[1] - 1, bounds[2] + 1, bounds[3] + 1]];
 }
 
 function run(algorithm, image, bounds, iterations) {
