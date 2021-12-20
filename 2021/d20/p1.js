@@ -8,14 +8,13 @@ function parseImage(image_text) {
   image = new Map();
   for (let [x, row] of image_text.split('\n').entries())
     for (let [y, px] of row.split('').entries())
-      image.set(k(x, y), px);
+      image.set(k(x, y), px == '#' ? 1 : 0); // Always store as ints
   return [image, [0, 0, image_text.split('\n').length - 1, image_text.split('\n')[0].length - 1]]
 }
 
 function calcNext(algorithm, image, iter, x, y) {
-  blank = iter % 2 == 0 ? '.' : algorithm[0];
-  algorithm_index_str = neighbors(x, y).map(c => image.get(k(c[0], c[1])) ?? blank).join('')
-  algorithm_index = parseInt(algorithm_index_str.replace(/#/g, '1').replace(/\./g, '0'), 2);
+  blank = iter % 2 ? algorithm[0] : 0;
+  algorithm_index = neighbors(x, y).map(c => image.get(k(c[0], c[1])) ?? blank).reduce((a, b) => (a << 1) + b, 0);
   return algorithm[algorithm_index];
 }
 
@@ -35,6 +34,7 @@ function run(algorithm, image, bounds, iterations) {
 
 const raw_data = fs.readFileSync('2021/d20/input', 'utf8');
 [algorithm, image_text] = raw_data.split(/\n\n/);
+algorithm = algorithm.split('').map(x => x == '#' ? 1 : 0); // Convert to ints
 [image, bounds] = parseImage(image_text);
 
 run(algorithm, image, bounds, 2); // Part 1
