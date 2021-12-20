@@ -8,7 +8,7 @@ function parseImage(image_text) {
   image = new Map();
   for (let [x, row] of image_text.split('\n').entries())
     for (let [y, px] of row.split('').entries())
-      image.set(k(x, y), px == '#' ? 1 : 0); // Always store as ints
+      image.set(k(x, y), px == '#'); // Always store as ints
   return [image, [0, 0, image_text.split('\n').length - 1, image_text.split('\n')[0].length - 1]]
 }
 
