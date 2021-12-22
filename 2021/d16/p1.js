@@ -22,11 +22,11 @@ const parseOperator = (stream) => {
   let version = -1, type = -1, payload = null;
   [version, type, stream] = ss(stream, 3, 3);
   if (stream[0] == '0') { // We know the length of the subsequent packets
-    [ignore, length, stream] = ss(stream, 1, 15);
+    [, length, stream] = ss(stream, 1, 15);
     [packets, stream] = ss(stream, parseInt(length, 2));
-    [payload, ignore] = decodePackets(packets, Number.MAX_SAFE_INTEGER);
+    [payload,] = decodePackets(packets, Number.MAX_SAFE_INTEGER);
   } else { // We know the number of the subsequent packets
-    [q, packetCount, stream] = ss(stream, 1, 11);
+    [, packetCount, stream] = ss(stream, 1, 11);
     [payload, stream] = decodePackets(stream, parseInt(packetCount, 2));
   }
   return [{

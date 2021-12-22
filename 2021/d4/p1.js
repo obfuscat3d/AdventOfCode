@@ -29,7 +29,7 @@ class BingoBoard {
 
     if (_.some(this.winners, (n) => n.length == 0)) {
       console.log('winner! ' + num);
-      console.log(num * this.numbers.reduce((a,b) => a+b, 0));
+      console.log(num * this.numbers.reduce((a, b) => a + b, 0));
       process.exit(); // terminate after the first winner
     }
   }
@@ -40,6 +40,6 @@ text_boards = _.rest(raw_data.split(/\n\n/));
 boards = text_boards.map((t) => new BingoBoard(t));
 
 // For each number, iterate over the boards calling go(num)
-// The answer is whatever board finishes last
+// The answer is whatever board finishes first
 _.each(numbers, (n) => _.each(boards, (b) => b.go(n)));
 

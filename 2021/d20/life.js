@@ -1,6 +1,5 @@
 const _ = require('underscore');
 const fs = require('fs');
-const { range } = require('underscore');
 
 const k = (x, y) => [x, y].join(',');
 const neighbors = (x, y) => _.flatten([-1, 0, 1].map(i => [-1, 0, 1].map(j => [x + i, y + j])), 1);

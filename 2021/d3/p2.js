@@ -3,7 +3,7 @@
 const _ = require('underscore');
 const fs = require('fs');
 
-const NUM_BITS = 12; 
+const NUM_BITS = 12;
 const FILE = '2021/d3/input';
 
 const raw_data = fs.readFileSync(FILE, 'utf8');
@@ -22,7 +22,7 @@ for (let i = NUM_BITS - 1; i >= 0 && oxygen.length > 1; i--) {
 }
 
 let scrubber = data;
-// Keep lease common, if tied, keep 0s
+// Keep least common, if tied, keep 0s
 for (let i = NUM_BITS - 1; i >= 0 && scrubber.length > 1; i--) {
   // bits is an array = [number_of_zeros, number_of_ones], so bits[1] = number of ones
   bits = _.countBy(scrubber.map((n) => (n & 1 << i) ? 1 : 0));
