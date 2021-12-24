@@ -1,4 +1,3 @@
-
 const _ = require('underscore');
 const fs = require('fs');
 
@@ -14,7 +13,7 @@ const new_box = (x1, x2, y1, y2, z1, z2) => ({
 });
 
 function overlap(box, boxes) {
-  return boxes.map(b => {
+  return boxes.map((b, i) => {
     [overlapMinX, overlapMaxX] = line_overlap(box.x1, box.x2, b.x1, b.x2);
     [overlapMinY, overlapMaxY] = line_overlap(box.y1, box.y2, b.y1, b.y2);
     [overlapMinZ, overlapMaxZ] = line_overlap(box.z1, box.z2, b.z1, b.z2);
@@ -22,7 +21,7 @@ function overlap(box, boxes) {
       overlapMaxY - overlapMinY >= 0 &&
       overlapMaxZ - overlapMinZ >= 0) {
       temp_box = new_box(overlapMinX, overlapMaxX, overlapMinY, overlapMaxY, overlapMinZ, overlapMaxZ);
-      return volume(temp_box) - overlap(temp_box, boxes.slice(1 + boxes.indexOf(b)));
+      return volume(temp_box) - overlap(temp_box, boxes.slice(i + 1));
     } else {
       return 0; // No overlap
     }
@@ -41,7 +40,7 @@ function part2(instructions) {
   return total_on;
 }
 
-const raw_data = fs.readFileSync('2021/d22/input', 'utf8');
+const raw_data = fs.readFileSync('2021/d22/input4', 'utf8');
 instructions = raw_data.split('\n').map(a =>
   [a.substr(0, 2), [...a.substr(3).matchAll(/-?\d+/g)].map(b => parseInt(b[0]))])
 

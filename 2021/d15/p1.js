@@ -26,7 +26,7 @@ pq.enqueue([0, 0], 0);
 while (!done[grid.length - 1][grid.length - 1]) {
   let [x, y] = pq.dequeue().element;
   done[x][y] = 1;
-  _.each(µ.neighbors(grid, x, y), ([i,j]) => {
+  _.each(µ.neighbors(grid, x, y), ([i, j]) => {
     let alt = cost[x][y] + grid[i][j];
     if (!done[i][j] && alt < cost[i][j]) {
       cost[i][j] = alt;
