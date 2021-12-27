@@ -28,10 +28,12 @@
     mem 
     (apply run (step pc mem))))
 
-(prn (run 0 
+(def mem 
   (vec 
     (map 
       #(Integer/parseInt %) 
-      (clojure.string/split (slurp "input2") #",")))))
+      (clojure.string/split (slurp "input2") #","))))
 
-; too low 337024
+(doseq [i (range 99) j (range 99)]
+  (when (= (get (run 0 (assoc (assoc mem 2 j) 1 i)) 0) 19690720)
+    (prn i j)))
