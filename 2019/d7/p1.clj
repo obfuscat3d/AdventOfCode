@@ -17,7 +17,7 @@
     (make-state (assoc mem (get mem (+ pc 3)) (+ (param state 1) (param state 2))) 
                 (+ pc 4)
                 (:input state)
-                (:outut state))))
+                (:output state))))
 
 (defn mul [state]
   (let [mem (:mem state)

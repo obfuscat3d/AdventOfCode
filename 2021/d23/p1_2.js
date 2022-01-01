@@ -30,6 +30,7 @@ function hallway_moves(b, c) {
   if (!hallway_clear(b, DOOR[b[c]], c)) return [];
   room = ROOM[b[c]];
 
+  // ugh, this is ugly as fuck
   target = -1;
   if (b[room[0]] != '.') return [];
   if (b[room[3]] == '.') target = room[3];
@@ -45,7 +46,7 @@ function hallway_moves(b, c) {
 }
 
 function room_moves(b, c) {
-  room_index = Math.floor((c - 11) / 4); // to which room am I in?
+  room_index = Math.floor((c - 11) / 4); // which room am I in?
   door = 2 + 2 * room_index; // what's the door to my current room?
   room_pos = (c - 11) % 4; // where am I in the room? 0 = top, 3 = bottom
   if (room_pos > 0 && b[c - 1] != '.') return [];
