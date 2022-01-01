@@ -71,7 +71,9 @@ function djikstra(initial_board) {
   q.enqueue({ board: initial_board, cost: 0 }, 0);
   seen = new Set();
 
+  i = 0;
   while (q.size()) {
+    console.log(i++);
     cur = q.dequeue();
     [board, cost] = [cur.element.board, cur.element.cost];
     if (!seen.has(board)) {

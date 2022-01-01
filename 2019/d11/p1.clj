@@ -15,18 +15,18 @@
 (defn paw [state n] ; params for writes n = nth param
   (let [mem (:mem state)
         pc (:pc state)]
-    (case (nth-digit (get mem pc) (+ n 1))
-      0 (get mem (+ n pc) 0)
-      1 (get mem (+ n pc) 0)
-      2 (+ (:rel state) (get mem (+ n pc)) 0))))
+    (case (nth-digit (mem pc) (+ n 1))
+      0 (mem (+ n pc) 0)
+      1 (mem (+ n pc) 0)
+      2 (+ (:rel state) (mem (+ n pc)) 0))))
 
 (defn par [state n] ; params for reads, n = nth param
   (let [mem (:mem state)
         pc (:pc state)]
-    (case (nth-digit (get mem pc) (+ n 1))
-      0 (get mem (get mem (+ n pc)) 0)
-      1 (get mem (+ n pc) 0)
-      2 (get mem (+ (:rel state) (get mem (+ n pc)) 0)))))
+    (case (nth-digit (mem pc) (+ n 1))
+      0 (mem (mem (+ n pc)) 0)
+      1 (mem (+ n pc) 0)
+      2 (mem (+ (:rel state) (mem (+ n pc)) 0)))))
 
 (defn add [state]
   (update-state state {
