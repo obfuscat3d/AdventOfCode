@@ -90,43 +90,12 @@
 
 ;; ----- GENERIC INTCODE ABOVE -----
 
-(defn update-tiles [$]
-  (let [r ($ :robot)]
-    (assoc ($ :tiles) [(r :x) (r :y)] (first (($ :comp) :output)))))
+(defn process-output [o]
+  (reduce #(into %1 {[(nth %2 0) (nth %2 1)] (nth %2 2)}) {} (partition 3 o)))
 
-(defn update-robot [$] ; 0 left, 1 right
-  (let [r ($ :robot)
-        right? (= 1 (last (($ :comp) :output)))
-        new-dx (if right? (r :dy) (- 0 (r :dy)))
-        new-dy (if right? (- 0 (r :dx)) (r :dx))]
-    {:dx new-dx :dy new-dy :x (+ (r :x) new-dx) :y (+ (r :y) new-dy)}))
-
-(defn update-comp [$]
-  (let [r ($ :robot)
-        t ($ :tiles)]
-    (update-state ($ :comp) {:blocked false 
-                             :output []
-                             :input (list (t [(r :x) (r :y)] 0)) })))
-
-(defn run-bot [input]
-  (loop [state {:comp (init-state (load-program "input") input)
-                :robot {:dx 0 :dy 1 :x 0 :y 0}
-                :tiles {}}]
-    (if (halted? (state :comp))
-      (state :tiles)
-      (recur (as-> state $
-               (assoc $ :comp (run ($ :comp)))
-               (assoc $ :tiles (update-tiles $))
-               (assoc $ :robot (update-robot $))
-               (assoc $ :comp (update-comp $))               
-               )))))
-
-(defn print-tiles [tiles] 
-  (doseq [x (range 5 -10 -1)]
-    (doseq [y (range -10 80)]
-      (print (if (= 1 (tiles [y x])) "#" " ")))
-    (prn)))
-
-(println "Part 1: " (count (run-bot '(0))))
-(println "Part 2: ")
-(print-tiles (run-bot '(1)))
+(as-> (load-program "input") $
+  (init-state $ [])
+  (run $)
+  (process-output ($ :output))
+  (count (filter #(= 2 %) (vals $)))
+  (println $))

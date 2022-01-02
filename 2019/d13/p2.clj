@@ -90,43 +90,30 @@
 
 ;; ----- GENERIC INTCODE ABOVE -----
 
-(defn update-tiles [$]
-  (let [r ($ :robot)]
-    (assoc ($ :tiles) [(r :x) (r :y)] (first (($ :comp) :output)))))
+(defn update-board [board new-output]
+  (reduce #(into %1 {[(nth %2 0) (nth %2 1)] (nth %2 2)}) board (partition 3 new-output)))
 
-(defn update-robot [$] ; 0 left, 1 right
-  (let [r ($ :robot)
-        right? (= 1 (last (($ :comp) :output)))
-        new-dx (if right? (r :dy) (- 0 (r :dy)))
-        new-dy (if right? (- 0 (r :dx)) (r :dx))]
-    {:dx new-dx :dy new-dy :x (+ (r :x) new-dx) :y (+ (r :y) new-dy)}))
+(def char-map {0 " " 1 "#" 2 "@" 3 "-" 4 "O"})
+(defn print-board [board]
+  (println)
+  (doseq [y (range 20)]
+    (doseq [x (range 50)]
+      (print (char-map (board [x y] 0))))
+    (println))
+  (println)
+  (println "Score: " (board [-1 0])))
 
-(defn update-comp [$]
-  (let [r ($ :robot)
-        t ($ :tiles)]
-    (update-state ($ :comp) {:blocked false 
-                             :output []
-                             :input (list (t [(r :x) (r :y)] 0)) })))
+(defn process-input [board state]
+  (let [ball-x (first (first (filter #(= 4 (board %)) (keys board))))
+        paddle-x (first (first (filter #(= 3 (board %)) (keys board))))
+        dx (if (= ball-x paddle-x) 0 (if (< paddle-x ball-x) 1 -1))]
+    (update-state state {:output [] :input [dx] :blocked false})))
 
-(defn run-bot [input]
-  (loop [state {:comp (init-state (load-program "input") input)
-                :robot {:dx 0 :dy 1 :x 0 :y 0}
-                :tiles {}}]
-    (if (halted? (state :comp))
-      (state :tiles)
-      (recur (as-> state $
-               (assoc $ :comp (run ($ :comp)))
-               (assoc $ :tiles (update-tiles $))
-               (assoc $ :robot (update-robot $))
-               (assoc $ :comp (update-comp $))               
-               )))))
+(defn play-game [state]
+  (loop [state (run state)
+         board {}]
+    (let [board (update-board board (state :output))]
+      (print-board board)
+      (recur(run (process-input board state)) board))))
 
-(defn print-tiles [tiles] 
-  (doseq [x (range 5 -10 -1)]
-    (doseq [y (range -10 80)]
-      (print (if (= 1 (tiles [y x])) "#" " ")))
-    (prn)))
-
-(println "Part 1: " (count (run-bot '(0))))
-(println "Part 2: ")
-(print-tiles (run-bot '(1)))
+(play-game (init-state (load-program "input") []))
