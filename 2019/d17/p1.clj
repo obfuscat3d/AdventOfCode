@@ -89,72 +89,66 @@
 
 ;; ----- GENERIC INTCODE ABOVE -----
 
-;; Printing the grid isn't necessary but was handy for debugging movement
-(def char-map {0 "#" 1 "." 2 "O" 3 " "})
 (defn print-grid [grid]
-  (doseq [y (range -25 20)] ; bounds discovered via trial and error
-    (doseq [x (range -25 20)]
-      (print (if (= [x y] [0 0]) "+" (char-map (grid [x y] 3)) )))
-    (println))
-  (println))
+  (let [{width :w height :h data :data} grid]
+    (doseq [y (range 0 height)] ; bounds discovered via trial and error
+      (doseq [x (range 0 width)]
+        (when (not= 10N (data [x y]))
+          (print (str (char (data [x y] 40))))))
+      (println))
+    (println)))
 
-(defn process-output [u]
-  (let [result (first ((u :s) :output))]
-    {:s (into (u :s) {:output '()})
-     :r (if (= 0 result) 
-          (into (u :r) {:moved false}) 
-          (into (u :r) {:moved true :p (vec (mapv + ((u :r) :p) ((u :r) :v)))}))
-     :g (assoc (u :g) (vec (mapv + ((u :r) :p) ((u :r) :v))) result)}))
+(defn get-neighbors [pos]
+  (let [[x y] pos]
+    #{[(+ x 1) y] [(- x 1) y] [x (+ y 1)] [x (- y 1)]}))
 
-; This isn't a general purpose mapping algo, just travels along
-; an edge by turning left after every move and progressively going
-; clockwise until a valid move is found. Works for this map.
-(def dir2vec {1 [0 -1] 2 [0 1] 3 [-1 0] 4 [1 0]})
-(def left-next {[0 -1] 3 [0 1] 4 [-1 0] 2 [1 0] 1})
-(def right-next {[0 -1] 4 [0 1] 3 [-1 0] 1 [1 0] 2})
-(defn make-next-move [u]
-  (let [next-map (if ((u :r) :moved) left-next right-next)
-        dir (next-map ((u :r) :v))] 
-    {:s (into (u :s) {:blocked false :input (list dir)})
-     :r (assoc (u :r) :v (dir2vec dir))
-     :g (u :g)}))
+; get the x,y coords for the ith member in a grid
+(defn i2xy [i width] [(mod i width) (quot i width)])
 
-(defn comp-run [u] (into u {:s (run (u :s))}))
+(defn grid-from-stream [s]
+  (let [width (+ 1 (first (filter #(= 10 (nth s %)) (range (count s)))))
+        height (quot (count s) width)]
+    (loop [i 0
+           s s
+           data {}]
+      (if (empty? s)
+        {:w width :h height :data data}
+        (recur (inc i) (rest s) (into data {(i2xy i width) (first s)}) )))))
 
-(defn explore [code]
-  (loop [u {:s (run (init-state code '(1)))
-            :r {:p [0 0] :v [0 1] :moved false}
-            :g {[0 0] 1}}]
-    (if (and (< 10 (count (u :g))) (= ((u :r) :p) [0 0]))
-      (u :g)
-      (recur (comp-run (make-next-move (process-output u)))))))
+(defn get-grid [code]
+  (grid-from-stream ((run (init-state code '())) :output)))
 
-(defn get-neighbors [grid pos]
-  (let [[x y] pos
-        nbrs #{[(+ x 1) y] [(- x 1) y] [x (+ y 1)] [x (- y 1)]}]
-    (filter #(some #{(grid %)} [1 2]) nbrs)))
+(defn find-intersections [grid]
+  (let [{width :w height :h data :data} grid]
+    (filter identity 
+      (apply concat
+        (for [y (range height)]
+          (for [x (range width)]
+            (when (= 4 (count (filter #(= 35 (data %)) (get-neighbors [x y]))))
+              [x y])))))))
+    
+(defn sum-alignment-params [aps] 
+  (reduce + (map #(* (% 0) (% 1)) aps)))
 
-(defn bfs-all-paths [grid start]
-  (loop [queue (conj (clojure.lang.PersistentQueue/EMPTY) [start []])
-         seen {}] 
-    (let [[cur cur-path] (peek queue)
-          path (conj cur-path cur)
-          nbrs (get-neighbors grid cur)
-          valid-nbrs (map #(list % path) (filter #(not (some #{%} path)) nbrs))
-          queue (if (contains? seen cur) (pop queue) (apply conj (pop queue) valid-nbrs))
-          seen (if (contains? seen cur) seen (assoc seen cur path))]
-      (if (empty? queue)
-        seen
-        (recur queue seen)))))
+; Done by hand. Boo.
+(def MAIN-ROUTINE '(\A \C \A \B \A \C \B \C \B \C))
+(def A '(\R \8 \L \5 \5 \L \6 \6 \R \4))
+(def B '(\R \8 \L \5 \5 \R \8))
+(def C '(\R \8 \L \6 \6 \R \4 \R \4))
+(def VIDEO? '(\y)) ; score doesn't print without live video. Bug in AoC?
+(defn seq-to-ascii [s] (conj (mapv int (interpose \, s)) 10))
+(def INPUT-FOR-PATH (apply concat (map seq-to-ascii [MAIN-ROUTINE A B C VIDEO?])))
 
+; part1
 (as-> (load-program "input") $
- (explore $)
- ; A little hack, we're actually going from the oxygen to [0 0]
- (bfs-all-paths $ (first (filter #(= 2 ($ %)) (keys $))))
- (prn (- (count ($ [0 0])) 1))) ; subtract since the first item in path isn't a move
+  (get-grid $)
+  (find-intersections $)
+  (sum-alignment-params $)
+  (println "Part 1: " $))
 
+; part 2
 (as-> (load-program "input") $
- (explore $)
- (bfs-all-paths $ (first (filter #(= 2 ($ %)) (keys $))))
- (map count (vals $))
- (prn (- (apply max $) 1)))
+  (init-state $ INPUT-FOR-PATH)
+  (run $)
+  (println "Part 2: " (last ($ :output))))
+

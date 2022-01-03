@@ -2,7 +2,7 @@
   (loop [old (reverse num)
          new (list)
          total 0]
-    (if (= (count old) 0)
+    (if (empty? old)
       new
       (recur (rest old) 
              (conj new (mod (+ total (first old)) 10))
