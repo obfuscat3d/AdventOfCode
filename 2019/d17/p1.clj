@@ -91,7 +91,7 @@
 
 (defn print-grid [grid]
   (let [{width :w height :h data :data} grid]
-    (doseq [y (range 0 height)] ; bounds discovered via trial and error
+    (doseq [y (range 0 height)]
       (doseq [x (range 0 width)]
         (when (not= 10N (data [x y]))
           (print (str (char (data [x y] 40))))))

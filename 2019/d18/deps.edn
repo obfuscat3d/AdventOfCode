@@ -1,0 +1,1 @@
+{ :deps {shams/priority-queue {:mvn/version "0.1.2"}}}
