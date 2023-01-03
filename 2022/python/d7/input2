@@ -1,0 +1,17 @@
+$ cd /
+$ ls
+dir a
+dir b
+100 FILE1
+$ cd a
+$ ls
+dir b
+200 FILE2
+$ cd b
+$ ls
+300 FILE3
+$ cd ..
+$ cd ..
+$ cd b
+$ ls
+400 FILE4
