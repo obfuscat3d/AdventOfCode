@@ -1,21 +1,19 @@
 import re
-import numpy as np
 
 
-def coord_to_complex(s):
-    return int(s.split(',')[0]) + 1j * int(s.split(',')[1])
-
+sign = lambda x: -1 if x < 0 else 0 if x == 0 else 1
+parse_complex = lambda s: int(s.split(',')[0]) + 1j * int(s.split(',')[1])
 
 depth, beach = 0, set()
 for line in open('input').read().split('\n'):
-    coords = re.findall("\d+,\d+", line)
-    p0 = coord_to_complex(coords.pop(0))
+    coords = list(map(parse_complex, re.findall("\d+,\d+", line)))
+    p0 = coords.pop(0)
     while coords:
-        p1 = coord_to_complex(coords.pop(0))
+        p1 = coords.pop(0)
         while p0 != p1:
             depth = max(depth, p0.imag)
             beach.add(p0)
-            p0 += np.sign((p1 - p0).real) + 1j * np.sign((p1 - p0).imag)
+            p0 += sign((p1 - p0).real) + 1j * sign((p1 - p0).imag)
         beach.add(p0)
         p0, depth = p1, max(depth, p1.imag)
 
@@ -35,4 +33,5 @@ while not 500 in beach:
         beach.add(sand)
         sand, part2 = 500, part2 + 1
 
-print(part1, part2)
+print(part1)
+print(part2)

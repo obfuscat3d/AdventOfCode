@@ -1,8 +1,6 @@
 C = {tuple(map(int, l.split(','))) for l in open("input").read().split('\n')}
 A = [(0, 0, 1), (0, 0, -1), (0, 1, 0), (0, -1, 0), (1, 0, 0), (-1, 0, 0)]
 
-exposed = sum([1 for c in C for a in A if tuple(map(sum, zip(c, a))) not in C])
-
 reachable, seen, new_steam = 0, set(), [(0, 0, 0)]
 while steam := new_steam:
     new_steam = []
@@ -15,4 +13,5 @@ while steam := new_steam:
                 seen.add(q)
                 new_steam.append(q)
 
-print(exposed, reachable)
+print(sum([1 for c in C for a in A if tuple(map(sum, zip(c, a))) not in C]))
+print(reachable)

@@ -8,11 +8,11 @@ def get_grid():
     return {x + 1j * y for y, l in enumerate(T) for x, c in enumerate(l) if c == '#'}
 
 
-neighbors = lambda p: [p - 1, p + 1, p - 1j, p + 1j, p + 1 + 1j, p + 1 - 1j, p - 1 + 1j, p - 1 - 1j]
+n8 = lambda p: [p - 1 - 1j, p - 1j, p + 1 - 1j, p - 1, p + 1, p - 1 + 1j, p + 1j, p + 1 + 1j]
 
 
 def elf_move(grid, p, round_no):
-    if all(not p1 in grid for p1 in neighbors(p)):
+    if all(not p1 in grid for p1 in n8(p)):
         return p
     moves_ops = [([p - 1j, p + 1 - 1j, p - 1 - 1j], p - 1j),
                  ([p + 1j, p + 1 + 1j, p - 1 + 1j], p + 1j),

@@ -1,4 +1,4 @@
-rocks = [[(2 + 0j), (3 + 0j), (4 + 0j), (5 + 0j)],
+ROCKS = [[(2 + 0j), (3 + 0j), (4 + 0j), (5 + 0j)],
          [(3 + 0j), (2 + 1j), (3 + 1j), (4 + 1j), (3 + 2j)],
          [(2 + 0j), (3 + 0j), (4 + 0j), (4 + 1j), (4 + 2j)],
          [(2 + 0j), (2 + 1j), (2 + 2j), (2 + 3j)],
@@ -26,36 +26,32 @@ def add_rock(cavern, rock, wind, wi):
             return cavern, wi
 
 
-def part1(rocks, wind):
-    wi, cavern = 0, set({x for x in range(7)})
-    for i in range(2022):
-        cavern, wi = add_rock(cavern, rocks[i % 5], wind, wi)
-    print(cavern_height(cavern))
-
-
-cache = {}
-
-
-def check_cache(cavern, rocks, i, wind, wi):
+def check_cache(cache, cavern, i, wind, wi):
     height = cavern_height(cavern)
-    key = (i % len(rocks), wi % len(wind))
+    key = (i % len(ROCKS), wi % len(wind))
     if key in cache:
         old_i, old_height = cache[key]
         if (int(1e12) - i) % (i - old_i) == 0:
-            return (height +
-                    int(1e12 - i) // (i - old_i) * (height - old_height))
+            return (height + int(1e12 - i) // (i - old_i) * (height - old_height))
     else:
         cache[key] = (i, height)
 
 
-def part2(rocks, wind):
-    i, wi, cavern = 0, 0, set({x for x in range(7)})
-    while not (answer := check_cache(cavern, rocks, i, wind, wi)):
-        cavern, wi = add_rock(cavern, rocks[i % 5], wind, wi)
+def part1(wind):
+    wi, cavern = 0, set({x for x in range(7)})
+    for i in range(2022):
+        cavern, wi = add_rock(cavern, ROCKS[i % 5], wind, wi)
+    print(cavern_height(cavern))
+
+
+def part2(wind):
+    i, wi, cavern, cache = 0, 0, set({x for x in range(7)}), {}
+    while not (answer := check_cache(cache, cavern, i, wind, wi)):
+        cavern, wi = add_rock(cavern, ROCKS[i % 5], wind, wi)
         i += 1
     print(answer)
 
 
 wind = open("input").read()
-part1(rocks, wind)
-part2(rocks, wind)
+part1(wind)
+part2(wind)

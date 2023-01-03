@@ -1,5 +1,5 @@
-import collections
-import heapq
+from collections import namedtuple, defaultdict
+from heapq import *
 
 
 def parse_input(filename):
@@ -7,10 +7,8 @@ def parse_input(filename):
     for line in open(filename).read().split('\n'):
         valve = line[6:8]
         flow_rate = int(line.split('=')[1].split(';')[0])
-        new_tunnels = [x.strip()
-                       for x in line.split('valve')[1][1:].split(',')]
-        valves[valve] = flow_rate
-        tunnels[valve] = new_tunnels
+        new_tunnels = [x.strip() for x in line.split('valve')[1][1:].split(',')]
+        valves[valve], tunnels[valve] = flow_rate, new_tunnels
     return [valves, tunnels]
 
 
@@ -29,7 +27,13 @@ def calc_distances(valves, tunnels):
     return dist
 
 
-State = collections.namedtuple("State", "flow,p1,t1,p2,t2,closed")
+# flow = total guaranteed flow from this state
+# p1 = position of actor 1
+# t1 = time when actor 1 can do something
+# p2 = position of actor 2
+# t2 = time when actor 2 can do something
+# closed = list of valves already closed
+State = namedtuple("State", "flow,p1,t1,p2,t2,closed")
 State.time = lambda s: min(s.t1, s.t2)
 
 
@@ -73,30 +77,26 @@ def generate_new_elephant_states(valves, dist, states):
 
 
 def part1(valves, dist):
-    pq = []
-    heapq.heappush(pq, State(0, 'AA', 0, 'AA', 30, {
-                   k for k, v in valves.items() if v}))
-
-    best, best_for_time = 0, collections.defaultdict(int)
-    i = 0
+    pq, best, best_for_time = [], 0, defaultdict(int)
+    heappush(pq, State(0, 'AA', 0, 'AA', 30, {k for k, v in valves.items() if v}))
     while pq:
-        cur = heapq.heappop(pq)
+        cur = heappop(pq)
         best = min(cur.flow, best)
         best_for_time[cur.time()] = min(best_for_time[cur.time()], cur.flow)
-        if cur.time() < 30 and cur.closed and (cur.time() < 10 or 1.5 * cur.flow <= best_for_time[cur.time()]):
-            for s in generate_new_human_states(valves, dist, cur):
-                heapq.heappush(pq, s)
+        if cur.time() < 30 and cur.closed:
+            if cur.time() < 10 or 1.25 * cur.flow <= best_for_time[cur.time()]:
+                for s in generate_new_human_states(valves, dist, cur):
+                    heappush(pq, s)
 
     print(-best)
 
 
 def part2(valves, dist):
     pq = []
-    heapq.heappush(pq, State(0, 'AA', 4, 'AA', 4, set(
-        k for k, v in valves.items() if v)))
-    best, best_for_time = 0, collections.defaultdict(int)
+    pq, best, best_for_time = [], 0, defaultdict(int)
+    heappush(pq, State(0, 'AA', 4, 'AA', 4, set(k for k, v in valves.items() if v)))
     while pq:
-        cur = heapq.heappop(pq)
+        cur = heappop(pq)
         best = min(cur.flow, best)
         best_for_time[cur.time()] = min(best_for_time[cur.time()], cur.flow)
         if cur.time() < 30 and cur.closed:
@@ -104,7 +104,7 @@ def part2(valves, dist):
                 h_states = generate_new_human_states(valves, dist, cur)
                 e_states = generate_new_elephant_states(valves, dist, h_states)
                 for s in e_states:
-                    heapq.heappush(pq, s)
+                    heappush(pq, s)
     print(-best)
 
 

@@ -1,7 +1,7 @@
 import re
 
 DIR_VALS = {1: 0, 1j: 1, -1: 2, -1j: 3}
-SIZE = 4
+SIZE = 50
 
 
 def parse():
@@ -83,8 +83,20 @@ def run(teleport_fn, grid, pos, dp, path):
     return [state[0], state[1]]
 
 
+def score(p, dp):
+    return int(1000 * (1 + p.imag) + 4 * (1 + p.real) + DIR_VALS[dp])
+
+
+def part1(grid, path):
+    final_pos, dp = run(teleport_1, grid, SIZE, 1, path)
+    print(score(final_pos, dp))
+
+
+def part2(grid, path):
+    final_pos, dp = run(teleport_2, grid, SIZE, 1, path)
+    print(score(final_pos, dp))
+
+
 grid, path = parse()
-final_pos, dp = run(teleport_1, grid, SIZE, 1, path)
-print(1000 * (1 + final_pos.imag) + 4 * (1 + final_pos.real) + DIR_VALS[dp])
-final_pos, dp = run(teleport_2, grid, SIZE, 1, path)
-print(1000 * (1 + final_pos.imag) + 4 * (1 + final_pos.real) + DIR_VALS[dp])
+part1(grid, path)
+part2(grid, path)

@@ -1,5 +1,5 @@
 import re
-import collections
+from collections import defaultdict, deque
 import math
 
 ORE, CLAY, OBSIDIAN, GEODE = 1, 2, 3, 4
@@ -39,8 +39,7 @@ def build_robot(bp, robots, resources, to_build):
     robots[to_build] += 1
     for resource, qty in bp[to_build].items():
         resources[resource] -= qty
-        assert resources[resource] >= 0
-    return (robots, resources)
+    return robots, resources
 
 
 def harvest(robots, resources):
@@ -52,27 +51,28 @@ def harvest(robots, resources):
 def largest_for_bp(bp, end_time):
     init_robots = {m: 0 for m in MATERIALS}
     init_robots[ORE] = 1
-    stack = [(0, init_robots, {m: 0 for m in MATERIALS}, set())]
-    best_at_time = collections.defaultdict(int)
+    stack = deque([(0, init_robots, {m: 0 for m in MATERIALS}, set())])
+    best_at_time = defaultdict(int)
     max_robots = get_max_robots(bp)
     while stack:
-        t, robots, resources, skipped_last_iteration = stack.pop(0)
+        t, robots, resources, skipped_last_iteration = stack.popleft()
         best_at_time[t] = max(best_at_time[t], resources[GEODE])
-        if t <= end_time and best_at_time[t] == resources[GEODE]:
-            options = get_build_options(bp, resources)
-            for to_build in options:
-                if not to_build:
-                    resources1 = harvest(robots, resources.copy())
-                    stack.append((t + 1, robots, resources1, options))
-                elif to_build in skipped_last_iteration:
-                    continue
-                elif robots[to_build] + 1 > max_robots[to_build]:
-                    continue
-                else:
-                    robots1, resources1 = build_robot(
-                        bp, robots.copy(), resources.copy(), to_build)
-                    resources1 = harvest(robots, resources1.copy())
-                    stack.insert(0, (t + 1, robots1, resources1, set()))
+        if t > end_time or best_at_time[t] > resources[GEODE]:
+            continue
+
+        options = get_build_options(bp, resources)
+        for to_build in get_build_options(bp, resources):
+            if not to_build:
+                resources1 = harvest(robots, resources.copy())
+                stack.append((t + 1, robots, resources1, options))
+            elif to_build in skipped_last_iteration:
+                continue
+            elif robots[to_build] + 1 > max_robots[to_build]:
+                continue
+            else:
+                robots1, resources1 = build_robot(bp, robots.copy(), resources.copy(), to_build)
+                resources1 = harvest(robots, resources1.copy())
+                stack.insert(0, (t + 1, robots1, resources1, set()))
     return best_at_time[end_time]
 
 
