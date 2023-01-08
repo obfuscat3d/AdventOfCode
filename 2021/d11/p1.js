@@ -1,15 +1,27 @@
-// https://adventofcode.com/2021/day/11
+// https://adventofcode.com/day/11
 
 const _ = require('underscore');
 const fs = require('fs');
-const µ = require('../../utils');
 
-const FILE = '2021/d11/input';
+const FILE = 'd11/input';
 
 const raw_data = fs.readFileSync(FILE, 'utf8');
 grid = raw_data.split('\n').map((row) => row.split('').map(Number));
 
 flashCount = 0;
+
+// Get neighbors on a 2D grid.
+const neighbors = (grid, x, y, diagonal = false) =>
+  _.flatten([-1, 0, 1].map(a => [-1, 0, 1].map(b => [x + a, y + b])), 1) // get an array of coords
+    .filter(([i, j]) => (
+      i >= 0 && j >= 0 && i < grid.length && j < grid.length && // filter so they're valid coords
+      (i != x || j != y) && // exclude self
+      (diagonal || i == x || y == j))); // optionally exclude diagonal
+
+// Convert between [x,y] coords and an int, handy for storing in hashmaps
+// Note that the coords need to be less than 2^16
+const xy = (coordArr) => (coordArr[0] << 16) + coordArr[1];
+const yx = (coord) => [coord >> 16, coord & ((1 << 16) - 1)];
 
 // Mess of a function that could be split up
 function step(grid) {
@@ -19,7 +31,7 @@ function step(grid) {
   // First, fine all the octopi with a score of 9 and queue them for flashing
   _.each(_.range(grid.length), x => (
     _.each(_.range(grid[0].length), y => {
-      if (grid[x][y] >= 9) flash_queue.push(µ.xy([x, y]));
+      if (grid[x][y] >= 9) flash_queue.push(xy([x, y]));
     })));
 
   // Flash the ones in the queue and keep adding any new
@@ -29,10 +41,10 @@ function step(grid) {
     if (!_.contains(flashed, cur)) {
       flashCount++;
       flashed.push(cur);
-      [x, y] = µ.yx(cur);
-      _.each(µ.neighbors(grid, x, y, true), ([i, j]) => {
+      [x, y] = yx(cur);
+      _.each(neighbors(grid, x, y, true), ([i, j]) => {
         if (++grid[i][j] >= 9) {
-          flash_queue.push(µ.xy([i, j]));
+          flash_queue.push(xy([i, j]));
         }
       });
     }
@@ -46,7 +58,7 @@ function step(grid) {
 
   // And reset the flashers back to zero
   _.each(flashed, (e) => {
-    [x, y] = µ.yx(e);
+    [x, y] = yx(e);
     grid[x][y] = 0;
   });
 }

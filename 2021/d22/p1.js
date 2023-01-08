@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const fs = require('fs');
 
-const raw_data = fs.readFileSync('2021/d22/input', 'utf8');
+const raw_data = fs.readFileSync('d22/input', 'utf8');
 instructions = raw_data.split('\n').map(a =>
   [a.substr(0, 2) == 'on', [...a.substr(3).matchAll(/-?\d+/g)].map(b => parseInt(b[0]))])
 

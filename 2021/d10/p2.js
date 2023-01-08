@@ -1,9 +1,9 @@
-// https://adventofcode.com/2021/day/10
+// https://adventofcode.com/day/10
 
 const _ = require('underscore');
 const fs = require('fs');
 
-const FILE = '2021/d10/input';
+const FILE = 'd10/input';
 const CHARS = {
   '(': ')',
   '[': ']',

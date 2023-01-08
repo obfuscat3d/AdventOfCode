@@ -83,7 +83,7 @@ class Node {
   }
 }
 
-const raw_data = fs.readFileSync('2021/d18/input', 'utf8');
+const raw_data = fs.readFileSync('d18/input', 'utf8');
 numbers = raw_data.split(/\n/).map(l => JSON.parse(l));
 
 // Part 1

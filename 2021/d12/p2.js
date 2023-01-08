@@ -1,9 +1,9 @@
-// https://adventofcode.com/2021/day/12
+// https://adventofcode.com/day/12
 
 const _ = require('underscore');
 const fs = require('fs');
 
-const FILE = '2021/d12/input';
+const FILE = 'd12/input';
 
 graph = {}
 

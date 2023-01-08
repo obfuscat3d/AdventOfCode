@@ -59,7 +59,7 @@ function align(s0, s1) {
 
 const manhattan = (a, b) => Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2]);
 
-const raw_data = fs.readFileSync('2021/d19/input', 'utf8');
+const raw_data = fs.readFileSync('d19/input', 'utf8');
 scanner_data = raw_data.split('\n\n').map(s => s.split('\n').slice(1).map(l => l.split(',').map(Number)));
 
 // Process data, final = array of beacon tuples in scanner 0's coordinates

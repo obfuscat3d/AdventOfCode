@@ -1,9 +1,9 @@
-// https://adventofcode.com/2021/day/8
+// https://adventofcode.com/day/8
 
 const _ = require('underscore');
 const fs = require('fs');
 
-const FILE = '2021/d8/input';
+const FILE = 'd8/input';
 
 // This is a bit messy but basically we're just using set theory to figure out
 // one number at a time. I'm not sure there's an easier route.

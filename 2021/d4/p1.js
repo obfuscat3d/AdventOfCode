@@ -1,9 +1,9 @@
-// https://adventofcode.com/2021/day/4
+// https://adventofcode.com/day/4
 
 const _ = require('underscore');
 const fs = require('fs');
 
-const FILE = '2021/d4/input';
+const FILE = 'd4/input';
 const raw_data = fs.readFileSync(FILE, 'utf8');
 
 class BingoBoard {

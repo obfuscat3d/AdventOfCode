@@ -1,9 +1,9 @@
-// https://adventofcode.com/2021/day/16
+// https://adventofcode.com/day/16
 
 const _ = require('underscore');
 const fs = require('fs');
 
-FILE = '2021/d16/input'
+FILE = 'd16/input'
 
 const h2b = (h) => _.map(h, i => parseInt(i, 16).toString(2).padStart(4, '0')).join('');
 const ss = (s, ...lengths) => [...lengths.map(i => { t = s.substr(0, i); s = s.substr(i); return t; }), s];

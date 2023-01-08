@@ -1,9 +1,9 @@
-// https://adventofcode.com/2021/day/4
+// https://adventofcode.com/day/4
 
 const _ = require('underscore');
 const fs = require('fs');
 
-const FILE = '2021/d4/input';
+const FILE = 'd4/input';
 const raw_data = fs.readFileSync(FILE, 'utf8');
 
 class BingoBoard {
@@ -33,7 +33,7 @@ class BingoBoard {
     if (!this.hasWon && _.some(this.winners, (n) => n.length == 0)) {
       this.hasWon = true;
       console.log('winner! ' + num);
-      console.log(num * this.numbers.reduce((a,b) => a+b, 0));
+      console.log(num * this.numbers.reduce((a, b) => a + b, 0));
     }
   }
 }

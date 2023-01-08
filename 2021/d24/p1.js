@@ -37,6 +37,6 @@ function run(program, input_buffer) {
   return mem['z'] == 0;
 }
 
-const raw_data = fs.readFileSync('2021/d24/input', 'utf8');
+const raw_data = fs.readFileSync('d24/input', 'utf8');
 const program = raw_data.split('\n');
 console.log(run(program, '95299897999897'));

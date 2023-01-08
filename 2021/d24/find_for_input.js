@@ -27,7 +27,7 @@ function run(input, biggest = true) {
   return final.join('');
 }
 
-const raw_data = fs.readFileSync('2021/d24/input', 'utf8');
+const raw_data = fs.readFileSync('d24/input', 'utf8');
 const input = raw_data.split('\n');
 
 console.log('Biggest: ', run(input));

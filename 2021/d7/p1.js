@@ -1,9 +1,9 @@
-// https://adventofcode.com/2021/day/7
+// https://adventofcode.com/day/7
 
 const _ = require('underscore');
 const fs = require('fs');
 
-const FILE = '2021/d7/input';
+const FILE = 'd7/input';
 
 const raw_data = fs.readFileSync(FILE, 'utf8');
 pos = raw_data.split(',').map(Number).sort();

@@ -1,10 +1,10 @@
-// https://adventofcode.com/2021/day/5
+// https://adventofcode.com/day/5
 
 const _ = require('underscore');
 const fs = require('fs');
 
 const SIZE = 1000;
-const FILE = '2021/d5/input';
+const FILE = 'd5/input';
 
 // There has to be a better way to initialize a 2D array
 grid = _.range(SIZE).map(a => _.range(SIZE).map((b) => 0));

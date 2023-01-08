@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const fs = require('fs');
 
-const FILE = '2021/d10/input';
+const FILE = 'd10/input';
 const CHARS = {
   '(':')',
   '[':']',

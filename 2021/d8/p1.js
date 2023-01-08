@@ -1,9 +1,9 @@
-// https://adventofcode.com/2021/day/8
+// https://adventofcode.com/day/8
 
 const _ = require('underscore');
 const fs = require('fs');
 
-const FILE = '2021/d8/input';
+const FILE = 'd8/input';
 
 const raw_data = fs.readFileSync(FILE, 'utf8');
 // Get the outputs

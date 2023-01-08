@@ -44,6 +44,6 @@ function part1(grid) {
   return i;
 }
 
-const raw_data = fs.readFileSync('2021/d25/input', 'utf8');
+const raw_data = fs.readFileSync('d25/input', 'utf8');
 let grid = raw_data.split('\n').map(line => line.split(''));
 console.log(part1(grid));

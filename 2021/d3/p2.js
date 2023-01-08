@@ -1,10 +1,10 @@
-// https://adventofcode.com/2021/day/3
+// https://adventofcode.com/day/3
 
 const _ = require('underscore');
 const fs = require('fs');
 
 const NUM_BITS = 12;
-const FILE = '2021/d3/input';
+const FILE = 'd3/input';
 
 const raw_data = fs.readFileSync(FILE, 'utf8');
 const data = _.toArray(raw_data.split(/\s/)).map((n) => parseInt(n, 2));

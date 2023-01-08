@@ -40,7 +40,7 @@ function part2(instructions) {
   return total_on;
 }
 
-const raw_data = fs.readFileSync('2021/d22/input4', 'utf8');
+const raw_data = fs.readFileSync('d22/input4', 'utf8');
 instructions = raw_data.split('\n').map(a =>
   [a.substr(0, 2), [...a.substr(3).matchAll(/-?\d+/g)].map(b => parseInt(b[0]))])
 

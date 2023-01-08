@@ -1,10 +1,10 @@
-// https://adventofcode.com/2021/day/14
+// https://adventofcode.com/day/14
 
 const _ = require('underscore');
 const fs = require('fs');
 const { values } = require('underscore');
 
-const FILE = '2021/d14/input';
+const FILE = 'd14/input';
 
 const raw_data = fs.readFileSync(FILE, 'utf8');
 [template, rules] = raw_data.split('\n\n');

@@ -32,7 +32,7 @@ function run(algorithm, image, bounds, iterations) {
   console.log(_.countBy(Array.from(image.values())));
 }
 
-const raw_data = fs.readFileSync('2021/d20/input', 'utf8');
+const raw_data = fs.readFileSync('d20/input', 'utf8');
 [algorithm, image_text] = raw_data.split(/\n\n/);
 algorithm = algorithm.split('').map(x => x == '#'); // Convert to ints
 [image, bounds] = parseImage(image_text);
