@@ -11,6 +11,8 @@ from z3 import *
 from dataclasses import dataclass
 from copy import deepcopy
 from util import *
+import numpy as np
+from pprint import pprint
 
 
 def parse(filename):
@@ -31,5 +33,5 @@ def part2(data):
 
 
 data = parse("input_test")
-part1(data)
-part2(data)
+part1(deepcopy(data))
+part2(deepcopy(data))
