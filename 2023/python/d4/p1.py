@@ -4,9 +4,8 @@ import re
 def count_matches(s):
     # Split the string at ':' then use a regex to find all numbers in the second
     # half. Count the dupes.
-    return len(re.findall(r"\d+", s.split(":")[1])) - len(
-        set(re.findall(r"\d+", s.split(":")[1]))
-    )
+    nums = re.findall(r"\d+", s.split(":")[1])
+    return len(nums) - len(set(nums))
 
 
 def p1(cards):
