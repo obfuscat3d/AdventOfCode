@@ -25,7 +25,7 @@ def quadratic(times, record_distances):
     return winnings_combos
 
 
-print(brute_force(*parse(open("input2").read().split("\n"))))
-print(quadratic(*parse(open("input2").read().split("\n"))))
+print(brute_force(*parse(open("input").read().split("\n"))))
 print(brute_force(*parse(open("input").read().replace(" ", "").split("\n"))))
+print(quadratic(*parse(open("input").read().split("\n"))))
 print(quadratic(*parse(open("input").read().replace(" ", "").split("\n"))))
